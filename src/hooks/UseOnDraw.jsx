@@ -5,7 +5,7 @@ import React , {useRef} from 'react'
 export const useOnDraw = (onDraw , color) => {
 
     const canvasRef = useRef(null)
-    
+
     const isDrawingRef = useRef(null)
 
     const prevPointRef = useRef(null)
@@ -30,7 +30,7 @@ export const useOnDraw = (onDraw , color) => {
 
             if(isDrawingRef.current){
 
-                console.log("x : " , e.clientX , "y : " , e.clientY )
+                // console.log("x : " , e.clientX , "y : " , e.clientY )
                 
                 const point = computePointInCanvas(e.clientX , e.clientY)
                 
@@ -40,7 +40,7 @@ export const useOnDraw = (onDraw , color) => {
 
                 prevPointRef.current = point
 
-                console.log("point" , point)
+                // console.log("point" , point)
             
             }
         }

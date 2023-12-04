@@ -1,52 +1,84 @@
-import React, { useEffect, useState } from 'react'
-import {useOnDraw} from '../hooks/UseOnDraw'
-import "./canvas.css"
+import React, { useEffect, useState, useRef } from 'react';
+import { useOnDraw } from '../hooks/UseOnDraw';
+import "./canvas.css";
 
-const Canvas = ({width , height , color}) => {
+const Canvas = ({ width, height, color, resetCanvas , setResetCanvas }) => {
 
-    const setCanvasRef = useOnDraw(onDraw , color)
-    
-    const [DefaultColor , setDefaultColor] = useState()
-    
-    useEffect(() => {
-      setDefaultColor(color)
-    } , [])
+  const setCanvasRef = useOnDraw(onDraw, color);
+
+  const canvasRef = useRef(null);
+
+  const [DefaultColor, setDefaultColor] = useState();
 
 
-    function onDraw(ctx , point , DefaultColor , prevPoint){
-      drawLine(prevPoint , point , ctx , DefaultColor , 5)
-    }
+  useEffect(() => {
+    setDefaultColor(color);
+  }, [color]);
 
-    function drawLine(start , end , ctx , color , width){
 
-      start = start ? start : end
 
-      ctx.beginPath()
-      ctx.lineWidth = width
-      ctx.strokeStyle = color
-      ctx.moveTo(start.x , start.y)
-      ctx.lineTo(end.x , end.y)
-      ctx.stroke()
+  useEffect(() => {
 
-      start = 0
+    if (resetCanvas) {
+      
+      const canvas = canvasRef.current;
+      const ctx = canvas.getContext('2d');
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      setResetCanvas(prev => !prev)
 
     }
+
+  }, [resetCanvas]);
+
+
+
+  function onDraw(ctx, point, DefaultColor, prevPoint) {
+    drawLine(prevPoint, point, ctx, DefaultColor, 5);
+  }
+
+
+
+  function drawLine(start, end, ctx, color, width) {
+
+    start = start ? start : end;
+
+    ctx.beginPath();
+    ctx.lineWidth = width;
+    ctx.strokeStyle = color;
+    ctx.moveTo(start.x, start.y);
+    ctx.lineTo(end.x, end.y);
+    ctx.stroke();
+
+  }
+
 
 
   return (
-    <canvas  width={width} height={height} className='canvas' ref={setCanvasRef} />
-  )
-}
+    <canvas
+      id='canvas'
+      width={width}
+      height={height}
+      className='canvas'
+      ref={(ref) => {
+        setCanvasRef(ref);
+        canvasRef.current = ref;
+      }}
+    />
+  );
+};
 
-export default Canvas
+export default Canvas;
 
-      // const {x , y} = point
-      // console.log(x , y)
-      // ctx.fillStyle = DefaultColor 
-      // ctx.beginPath()
-      // // ctx.drawLine(x , y)
-      // // ctx.moveTo(window.scrollX - x , window.screenY - y)
-      // // ctx.lineTo(x , y)
-      // // ctx.arc(x , y , 2 , 0 , 2 * Math.PI)
-      // ctx.stroke()
-      // ctx.strokeStyle = DefaultColor
+
+// This code introduces a useEffect that watches the resetCanvas prop
+// . When resetCanvas changes (i.e., when it's updated from the parent component)
+// , the effect clears the canvas by using clearRect on the canvas context.
+//  This effectively resets the canvas when the resetCanvas prop changes.
+
+// In summary, this line ensures that the canvas reference is set both 
+// within the context of the useOnDraw hook (or similar) and 
+// also available for direct access using the canvasRef.current property elsewhere in the component.
+
+
+
