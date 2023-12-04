@@ -5,6 +5,7 @@ import React , {useRef} from 'react'
 export const useOnDraw = (onDraw , color) => {
 
     const canvasRef = useRef(null)
+    
     const isDrawingRef = useRef(null)
 
     const prevPointRef = useRef(null)
@@ -42,17 +43,32 @@ export const useOnDraw = (onDraw , color) => {
                 console.log("point" , point)
             
             }
-
-            
         }
         
-        const mouseLeaveListener = (e) => {
-            prevPointRef.current = null
-        }
+
+        const mouseoutListener = () => {
+            if (isDrawingRef.current) {
+              isDrawingRef.current = false;
+              prevPointRef.current = null;
+            }
+          };
+
+
+          const mouseDownListener = () => {
+            isDrawingRef.current = true;
+          };
+
+
+          const mouseUpListener = () => {
+            isDrawingRef.current = false;
+            prevPointRef.current = null;
+          };
 
 
         window.addEventListener("mousemove" , mouseMoveListener)
-        window.addEventListener("mouseleave" , mouseLeaveListener )
+        window.addEventListener("mousedown", mouseDownListener);
+        window.addEventListener("mouseup", mouseUpListener);
+        window.addEventListener("mouseout", mouseoutListener);
 
     }
 
